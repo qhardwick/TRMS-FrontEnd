@@ -1,9 +1,6 @@
 import { Outlet } from "react-router-dom";
-import NewFormRequest from "../components/NewRequestForm";
-
 
 export default function Forms() {
-
 
     return(
         <section>
