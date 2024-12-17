@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { submitNewForm } from "../features/forms/formSlice";
+import { createForm } from "../features/forms/formSlice";
 import Dropdown from "./Dropdown";
 import { useNavigate } from "react-router-dom";
 
 
 export default function NewFormRequest() {
 
-    // Configure redux state handlers:
+    // Define redux global state handlers:
     const dispatch = useDispatch();
     const {loading, error, form} = useSelector(state => state.forms);
 
@@ -56,13 +56,13 @@ export default function NewFormRequest() {
     // Dispatch data to redux store on submit:
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(submitNewForm(formData));
+        dispatch(createForm(formData));
     }
 
     // If the form object is updated in the store, navigate to the attachments page:
     useEffect(() => {
         if(form) {
-            navigate("/forms/new-form-attachments");
+            navigate("/forms/new-attachments");
         }
     },[form, navigate]);
 
@@ -238,7 +238,7 @@ export default function NewFormRequest() {
                 <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
             </form>
 
-            {error && <p style={{color: 'red'}}>{ error }</p>}
+            {error && <p className="error">{ error }</p>}
         </section>
     )
 }
