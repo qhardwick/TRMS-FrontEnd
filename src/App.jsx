@@ -7,8 +7,10 @@ import Registration from './pages/Registration'
 import Login from './pages/Login'
 import Messages from './pages/Messages'
 import Forms from './pages/Forms'
-import NewFormRequest from './components/NewRequestForm'
-import NewFormAttachments from './components/NewFormAttachments'
+import NewForm from './components/forms/NewForm'
+import AttachmentsForm from './components/forms/AttachmentsForm'
+import FormsDashboard from './components/forms/FormsDashboard'
+import UserForms from './components/forms/UserForms'
 
 function App() {
 
@@ -21,8 +23,10 @@ function App() {
           <Route path='/register' element={<Registration />} />
           <Route path='/login' element={<Login />} />
           <Route path='/forms' element={<Forms />}>
-            <Route path='new' element={<NewFormRequest />} />
-            <Route path='new-attachments' element={<NewFormAttachments />} />
+            <Route path='' element={<FormsDashboard />} />
+            <Route path='new' element={<NewForm />} />
+            <Route path='attachments' element={<AttachmentsForm />} />
+            <Route path='my-forms' element={<UserForms />} />
           </Route>
           <Route path='/messages' element={<Messages />} />
           <Route path='*' element={<Home />} />
