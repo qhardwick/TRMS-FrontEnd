@@ -26,7 +26,7 @@ export default function Registration() {
 
 
     return(
-        <main>
+        <article>
             <h1>Register:</h1>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -78,6 +78,6 @@ export default function Registration() {
 
             {error && <p style={{color: 'red'}}>{ error }</p>}
             {user && <p style={{color: 'green'}}>Registration successful</p>}
-        </main>
+        </article>
     )
 }

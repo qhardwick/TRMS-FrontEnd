@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createForm } from "../features/forms/formSlice";
-import Dropdown from "./Dropdown";
+import { createForm } from "../../features/forms/formSlice";
+import Dropdown from "../Dropdown";
 import { useNavigate } from "react-router-dom";
 
 
-export default function NewFormRequest() {
+export default function NewForm() {
 
     // Define redux global state handlers:
     const dispatch = useDispatch();
@@ -62,18 +62,18 @@ export default function NewFormRequest() {
     // If the form object is updated in the store, navigate to the attachments page:
     useEffect(() => {
         if(form) {
-            navigate("/forms/new-attachments");
+            navigate("/forms/attachments");
         }
     },[form, navigate]);
 
     return(
         <section>
             <form onSubmit={handleSubmit}>
-                <h1>Reimbursement Request Form</h1>
+                <h2>Reimbursement Request Form</h2>
                 <fieldset>
                     <legend>Employee Details</legend>
                     <div>
-                        <label>Username<span style={{color: 'red'}}>*</span></label>
+                        <label>Username</label>
                         <input 
                             type="text"
                             name="username"
@@ -82,9 +82,10 @@ export default function NewFormRequest() {
                             aria-label="Enter username"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>First name<span style={{color: 'red'}}>*</span></label>
+                        <label>First name</label>
                         <input 
                             type="text"
                             name="firstName"
@@ -93,9 +94,10 @@ export default function NewFormRequest() {
                             aria-label="Enter first name"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Last name<span style={{color: 'red'}}>*</span></label>
+                        <label>Last name</label>
                         <input 
                             type="text"
                             name="lastName"
@@ -104,9 +106,10 @@ export default function NewFormRequest() {
                             aria-label="Enter last name"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Email<span style={{color: 'red'}}>*</span></label>
+                        <label>Email</label>
                         <input 
                             type="email"
                             name="email"
@@ -115,12 +118,13 @@ export default function NewFormRequest() {
                             aria-label="Enter email address"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                 </fieldset>
                 <fieldset>
                     <legend>General Event Details</legend>
                     <div>
-                        <label>Event Start Time<span style={{color: 'red'}}>*</span></label>
+                        <label>Event Start Time</label>
                         <input 
                             type="time"
                             name="time"
@@ -130,9 +134,10 @@ export default function NewFormRequest() {
                             aria-label="Enter event starting time"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Event Start Date<span style={{color: 'red'}}>*</span></label>
+                        <label>Event Start Date</label>
                         <input 
                             type="date"
                             name="date"
@@ -142,9 +147,10 @@ export default function NewFormRequest() {
                             aria-label="Enter event start date"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Location<span style={{color: 'red'}}>*</span></label>
+                        <label>Location</label>
                         <input 
                             type="text"
                             name="location"
@@ -153,9 +159,10 @@ export default function NewFormRequest() {
                             aria-label="Enter event location"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Brief description of the event<span style={{color: 'red'}}>*</span></label>
+                        <label>Brief description of the event</label>
                         <input 
                             type="text"
                             name="description"
@@ -164,12 +171,13 @@ export default function NewFormRequest() {
                             aria-label="Enter event description"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                 </fieldset>
                 <fieldset>
                     <legend>Work-related Details</legend>
                     <div>
-                        <label>Cost<span style={{color: 'red'}}>*</span></label>
+                        <label>Cost</label>
                         <input 
                             type="number"
                             step={0.01}
@@ -179,6 +187,7 @@ export default function NewFormRequest() {
                             aria-label="Enter event cost"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
                         <Dropdown
@@ -213,7 +222,7 @@ export default function NewFormRequest() {
                         />
                     </div>
                     <div>
-                        <label>Justification<span style={{color: 'red'}}>*</span></label>
+                        <label>Justification</label>
                         <input 
                             type="text"
                             name="justification"
@@ -222,16 +231,16 @@ export default function NewFormRequest() {
                             aria-label="Enter work-related justification"
                             required
                         />
+                        <span style={{color: 'red'}}>*</span>
                     </div>
                     <div>
-                        <label>Work Hours to be Missed<span style={{color: 'red'}}>*</span></label>
+                        <label>Work Hours to be Missed</label>
                         <input 
                             type="number"
                             name="hoursMissed"
                             value={formData.hoursMissed}
                             onChange={handleChange}
                             aria-label="Enter work hours that will be missed"
-                            required
                         />
                     </div>
                 </fieldset>

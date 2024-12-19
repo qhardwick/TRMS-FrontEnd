@@ -1,31 +1,100 @@
+/* Apply border-box to all elements and pseudo-elements */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure we're always covering the full height of the window. Establish base font size (1rem = 16px)  */
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Makes the <main> container defined in App.jsx housing all of our components take up full height of window */
+main {
+  display: flex;
+  flex-direction: column; /* stacks components vertically rather than horizontally, so header -> body -> footer */
+  min-height: 100%;
+}
+
 header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 11px;
-  height: 65px;
+  position: fixed; /* pins header to top. will not scroll out of view */
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  height: 5rem; /* (5rem * 16px/rem) = 80px */
   background-color: #782F40;
   color: #CEB888;
-  padding: 20px;
+  padding: 1.25rem;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
 }
 
+/* Spread horizontally, gap between items, remove bullets, pin to the right in header but 6em away from edge  */
+header > ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  position: absolute;
+  right: 6rem;
+}
+
+/***** This only exists to switch between test users until we implement real auth. Will delete.  ******/
+header > ol {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  position: absolute;
+  left: 6rem;
+}
+
+/* Align text within center of container, allow container to fill all unused space within parent (header) flexbox */
+.header--title {
+  text-align: center;
+  flex-grow: 1;
+  margin: 0;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 300;
+}
+
+/* Don't underline or change color of link text */
 .header--link {
   text-decoration: none;
   color: #CEB888;
 } 
 
+/* Prevent horizontal scrolling */
 body {
-  margin: 0;
   font-family: Inter, sans-serif;
   background-color: #FFFDD0;
+  overflow-x: hidden;
 }
 
-section {
-  display: flex;
+/* Fill unused space in parent (main) flexbox, scroll vertically if needed, extra padding on top to push content down
+   below pinned header element that would otherwise cover it up */ 
+article {
   justify-content: center;
+  text-align: center;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  padding-top: 7rem;
 }
 
+/* Text decoration for error messages */
 .error {
   color: red;
+}
+
+footer {
+  background-color: #782F40;
+  color: #CEB888;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 0.625rem 0;
+  text-align: center;
+  margin-top: auto;
+  z-index: 10;
 }

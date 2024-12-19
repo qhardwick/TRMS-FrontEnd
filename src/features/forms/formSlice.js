@@ -66,6 +66,25 @@ export const submitForm = createAsyncThunk(
     }
 );
 
+// Fetch all Forms associated with a given user. Optionally, include a status param to filter and return a subset:
+export const userForms = createAsyncThunk(
+    'forms/userForms',
+    async ({ username, status }, { rejectWithValue }) => {
+        try {
+            console.log("Slice username: " + username);
+            const response = await axios.get(`http://localhost:8125/forms/active`,
+                { 
+                    params: {"status": status},
+                    headers: {"username": username}
+                }
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 
 
 const formSlice = createSlice({
@@ -73,7 +92,8 @@ const formSlice = createSlice({
     initialState: {
         loading: false,
         error: null,
-        form: null
+        form: null,
+        userForms: []
     },
     reducers: {},
     extraReducers: builder => {
@@ -131,6 +151,20 @@ const formSlice = createSlice({
                 state.form = action.payload;
             })
             .addCase(submitForm.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            // Retrieve all Forms created by user:
+            .addCase(userForms.pending, state => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(userForms.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userForms = action.payload;
+            })
+            .addCase(userForms.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

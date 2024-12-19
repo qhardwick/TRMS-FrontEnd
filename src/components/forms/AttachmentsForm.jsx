@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { submitForm, updateAttachment } from "../features/forms/formSlice";
+import { submitForm, updateAttachment } from "../../features/forms/formSlice";
 
 
-export default function NewFormAttachments() {
+export default function AttachmentsForm() {
 
     // Define redux global state handlers:
     const { loading, error, form } = useSelector(state => state.forms);
@@ -76,6 +76,10 @@ export default function NewFormAttachments() {
 
         } catch (error) {
             console.error("Error uploading attachment:", error)
+        } finally {
+            // dispatching updateAttachment will correctly update loading regardless of the result, but if we encounter an error that triggers
+            // the catch block before the function has been called we would be stuck "loading" forever:
+            dispatch({ type: 'forms/setLoading', payload: false });
         }
     };
 
