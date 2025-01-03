@@ -10,7 +10,8 @@ import Forms from './pages/Forms'
 import NewForm from './components/forms/NewForm'
 import AttachmentsForm from './components/forms/AttachmentsForm'
 import FormsDashboard from './components/forms/FormsDashboard'
-import UserForms from './components/forms/UserForms'
+import FormsTable from './components/forms/FormsTable'
+import ViewForm from './components/forms/ViewForm'
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
             <Route path='' element={<FormsDashboard />} />
             <Route path='new' element={<NewForm />} />
             <Route path='attachments' element={<AttachmentsForm />} />
-            <Route path='my-forms' element={<UserForms />} />
+            <Route path='table' element={<FormsTable />} />
+            <Route path='form' element={<ViewForm />} />
           </Route>
           <Route path='/messages' element={<Messages />} />
           <Route path='*' element={<Home />} />

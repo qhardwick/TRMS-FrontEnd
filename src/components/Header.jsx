@@ -24,12 +24,20 @@ export default function Header() {
 
     return(
         <header>
-            <h2 className="header--title"><NavLink to="/" className="header--link">Tuition Reimbursement Management System</NavLink></h2>
-            <ul>
-                <li><NavLink to="/forms" className="header--link">User Control Panel</NavLink></li>
-                <li><NavLink to="/forms" className="header--link">Forms</NavLink></li>
-                <li><NavLink to="/messages" className="header--link">Messages</NavLink></li>
-            </ul>
+            <h2 className="header--title"><NavLink to='/' className="header--link">Tuition Reimbursement Management System</NavLink></h2>
+            { currentUser ?
+                <ul>
+                    <li><NavLink to='/forms' className="header--link">User Control Panel</NavLink></li>
+                    <li><NavLink to='/forms' className="header--link">Forms</NavLink></li>
+                    <li><NavLink to='/messages' className="header--link">Messages</NavLink></li>
+                    <li><NavLink to='/logout' className="header--link">Logout</NavLink></li>
+                </ul>
+                :
+                <ul>
+                    <li><NavLink to='/login' className="header--link">Login</NavLink></li>
+                    <li><NavLink to='/register' className="header--link">Register</NavLink></li>
+                </ul>
+            }
             <ol>
                 <li>Current User:
                     {loading ? (
@@ -41,7 +49,7 @@ export default function Header() {
                             value={currentUser || ""}
                             onChange={handleChange}
                         >
-                            <option value="" disabled>Select User</option>
+                            <option value="">Select User</option>
                             {userList.map((userItem) => (
                                 <option key={userItem.username} value={userItem.username}>
                                     {userItem.username}

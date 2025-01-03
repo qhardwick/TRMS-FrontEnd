@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../../config/config";
 
 // Register new user:
 export const registerUser = createAsyncThunk(
     'users/registerUser',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:8125/users', userData);
+            const response = await axios.post(`${API_URL}/users`, userData);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -19,7 +20,7 @@ export const getAllUsers = createAsyncThunk(
     'users/getAllUsers',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get('http://localhost:8125/users');
+            const response = await axios.get(`${API_URL}/users`);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);

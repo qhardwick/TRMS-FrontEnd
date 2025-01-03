@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../../config/config";
 
 
 // Create a new request Form action:
@@ -7,7 +8,7 @@ export const createForm = createAsyncThunk(
     'forms/createForm',
     async (formData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:8125/forms', formData);
+            const response = await axios.post(`${API_URL}/forms`, formData);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -20,7 +21,7 @@ export const updateForm = createAsyncThunk(
     'forms/updateForm',
     async (updatedData, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`http://localhost:8125/forms/${updatedData.id}`, updatedData);
+            const response = await axios.put(`${API_URL}/forms/${updatedData.id}`, updatedData);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -33,7 +34,7 @@ export const updateAttachment = createAsyncThunk(
     'forms/updateAttachment',
     async ({ id, attachmentType, key }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`http://localhost:8125/forms/${id}/attachments/url`,
+            const response = await axios.put(`${API_URL}/forms/${id}/attachments/url`,
                 null, // nothing in request body
                 {
                     params: {
@@ -55,7 +56,7 @@ export const submitForm = createAsyncThunk(
     'forms/submitForm',
     async ({ id, username }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`http://localhost:8125/forms/${id}/submit`,
+            const response = await axios.put(`${API_URL}/forms/${id}/submit`,
                 null,
                 { headers: {"username": username} }
             );
@@ -67,15 +68,14 @@ export const submitForm = createAsyncThunk(
 );
 
 // Fetch all Forms associated with a given user. Optionally, include a status param to filter and return a subset:
-export const userForms = createAsyncThunk(
-    'forms/userForms',
-    async ({ username, status }, { rejectWithValue }) => {
+export const getUserForms = createAsyncThunk(
+    'forms/getUserForms',
+    async ({ currentUser, status }, { rejectWithValue }) => {
         try {
-            console.log("Slice username: " + username);
-            const response = await axios.get(`http://localhost:8125/forms/active`,
+            const response = await axios.get(`${API_URL}/forms/active`,
                 { 
-                    params: {"status": status},
-                    headers: {"username": username}
+                    params: {status},
+                    headers: {"username": currentUser}
                 }
             );
             return response.data;
@@ -93,9 +93,25 @@ const formSlice = createSlice({
         loading: false,
         error: null,
         form: null,
-        userForms: []
+        userForms: [],
+        status: null
     },
-    reducers: {},
+    reducers: {
+        // Set the currently selected form for individual display and editing:
+        setForm(state, action) {
+            state.form = action.payload;
+        },
+
+        // Set form Status value for filtering:
+        setStatus(state, action) {
+            state.status = action.payload;
+        },
+
+        // Manually set loading state during api calls not handled by redux:
+        setLoading(state, action) {
+            state.loading = action.payload;
+        }
+    },
     extraReducers: builder => {
         builder
             // Create new Form:
@@ -156,24 +172,21 @@ const formSlice = createSlice({
             })
 
             // Retrieve all Forms created by user:
-            .addCase(userForms.pending, state => {
+            .addCase(getUserForms.pending, state => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(userForms.fulfilled, (state, action) => {
+            .addCase(getUserForms.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userForms = action.payload;
             })
-            .addCase(userForms.rejected, (state, action) => {
+            .addCase(getUserForms.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-
-            // Trigger loading state independent of other actions:
-            .addCase('forms/setLoading', (state, action) => {
-                state.loading = action.payload;
-            })
     }
 });
+
+export const { setForm, setStatus, setLoading } = formSlice.actions;
 
 export default formSlice.reducer;

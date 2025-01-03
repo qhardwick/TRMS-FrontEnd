@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createForm } from "../../features/forms/formSlice";
+import { createForm, setForm } from "../../features/forms/formSlice";
 import Dropdown from "../Dropdown";
 import { useNavigate } from "react-router-dom";
 
@@ -16,24 +16,27 @@ export default function NewForm() {
 
     // Configure local state to be populated from form data to form a payload to be dispatched:
     const [formData, setFormData] = useState({
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        time: '',
-        date: '',
-        location: '',
-        description: '',
+        username: undefined,
+        firstName: undefined,
+        lastName: undefined,
+        email: undefined,
+        time: undefined,
+        date: undefined,
+        location: undefined,
+        description: undefined,
         cost: 0,
-        gradeFormat: '',
-        passingGrade: '',
-        eventType: '',
-        justification: '',
+        gradeFormat: undefined,
+        passingGrade: undefined,
+        eventType: undefined,
+        justification: undefined,
         hoursMissed: 0,
-        attachment: '',
-        supervisorAttachment: '',
-        departmentHeadAttachment: '',
-    })
+        attachment: undefined,
+        supervisorAttachment: undefined,
+        departmentHeadAttachment: undefined
+    });
+
+    // Set up a boolean to see whether or not the form has been submitted. Used to prevent the useEffect from triggering if component mounts with a form already loaded in the store:
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     // Update local form data fields as user inputs:
     const handleChange = (event) => {
@@ -244,7 +247,9 @@ export default function NewForm() {
                         />
                     </div>
                 </fieldset>
-                <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+                <button className="form--button" type="submit" disabled={loading}>
+                    {loading ? 'Submitting...' : 'Next: Attachments'}
+                </button>
             </form>
 
             {error && <p className="error">{ error }</p>}
