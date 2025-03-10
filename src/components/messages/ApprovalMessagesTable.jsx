@@ -45,7 +45,10 @@ export default function ApprovalMessagesTable() {
                     <tr key={message.formId}>
                         <td>
                             <button className="message--table--button" onClick={() => handleViewMessage(message.formId)}>
-                                <img src={message.viewed ? read : unread} className="message--icon" alt={message.viewed ? "Read message icon" : "Unread message icon"} />
+                                <div className="message--icon--wrapper">
+                                    <img src={message.viewed ? read : unread} className="message--icon" alt={message.viewed ? "Read message icon" : "Unread message icon"} />
+                                    {message.urgent && <span className="message--urgent--icon">!</span>}
+                                </div>
                                 {message.formId}
                             </button>
                         </td>

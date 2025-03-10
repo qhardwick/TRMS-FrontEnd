@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createForm } from "../../features/forms/formSlice";
 import Dropdown from "../Dropdown";
@@ -9,7 +9,7 @@ export default function NewForm() {
 
     // Define redux global state handlers:
     const dispatch = useDispatch();
-    const {form, loading, error} = useSelector(state => state.forms);
+    const {loading, error} = useSelector(state => state.forms);
 
     // Configure navigation to transition to attachments page on submit:
     const navigate = useNavigate();
@@ -51,17 +51,13 @@ export default function NewForm() {
     };
 
     // Dispatch data to redux store on submit:
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        dispatch(createForm(formData));
-    }
-
-    // Once we have a Form object loaded into the store, proceed to attachments:
-    useEffect(() => {
-        if(form) {
+        await dispatch(createForm(formData)).unwrap();
+        if(!error) {
             navigate("/forms/attachments");
         }
-    }, [dispatch, form])
+    }
 
     return(
         <section>

@@ -141,7 +141,7 @@ export default function AttachmentsForm() {
                     </div>
                 </fieldset>
                 {error && <p className="error">{ error }</p>}
-                <button type="submit" disabled={loading}>{loading ? "Loading..." : "Submit"}</button>
+                <button className="form--button" type="submit" disabled={loading}>{loading ? "Loading..." : "Submit"}</button>
         </form>
     )
 }

@@ -1,10 +1,32 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AttachmentTypes } from "../../constants/AttachmentTypes";
+import { setLoading } from "../../features/forms/formSlice";
+import { getPresignedUrl } from "../../utils/getPresignedUrl";
+import { useState } from "react";
 
 
 export default function ReadOnlyForm() {
 
     // State handlers:
+    const dispatch = useDispatch();
     const form = useSelector(state => state.forms.form);
+    const [error, setError] = useState(null);
+
+    // Open an attachment:
+    const handleDownloadAttachment = async (event, attachmentType) => {
+        event.preventDefault();
+        const id = form.id;
+        dispatch(setLoading(true));
+        try {
+            const url = await getPresignedUrl({id, attachmentType});
+            window.open(url, '_blank');
+            dispatch(setLoading(false));
+        }
+        catch (err) {
+            dispatch(setLoading(false))
+            setError(err);
+        }
+    }
 
     return(
         <form>
@@ -32,7 +54,8 @@ export default function ReadOnlyForm() {
                             readOnly
                         />
                     </div>
-                    {form.status === "DENIED" ? 
+                </div>
+                {form.status === "DENIED" ? 
                         <div className="form--fields--container">
                             <div className="form--field">
                                 <label htmlFor="reasonDenied">Reason Denied</label>
@@ -45,7 +68,6 @@ export default function ReadOnlyForm() {
                             </div>
                         </div>
                     : null}
-                </div>
             </fieldset>
             <fieldset>
                 <legend>Employee Details</legend>
@@ -208,33 +230,24 @@ export default function ReadOnlyForm() {
                 <legend>Attachments</legend>
                 <div>
                     <label htmlFor="attachment">Event Attachment</label>
-                    <input 
-                        type="text"
-                        name="attachment"
-                        value={form.attachment}
-                        disabled
-                        readOnly
-                    />
+                    <button onClick={() => handleDownloadAttachment(event, AttachmentTypes.EVENT)} className={`form--input--button ${form.attachment ? "active" : ""}`} name="attachment">
+                        {form.attachment}
+                    </button>
                 </div>
                 <div>
                     <label htmlFor="supervisorAttachment">Supervisor Pre-approval</label>
-                    <input 
-                        type="text"
-                        name="supervisorAttachment"
-                        value={form.supervisorAttachment}
-                        disabled
-                        readOnly
-                    />
+                    <button onClick={() => handleDownloadAttachment(event, AttachmentTypes.SUPERVISOR_APPROVAL)} className={`form--input--button ${form.supervisorAttachment ? "active" : ""}`} name="supervisorAttachment">
+                        {form.supervisorAttachment}
+                    </button>
                 </div>
                 <div>
                     <label htmlFor="departmentHeadAttachment">Department Head Pre-approval</label>
-                    <input 
-                        type="text"
-                        name="departmentHeadAttachment"
-                        value={form.departmentHeadAttachment}
-                        disabled
-                        readOnly
-                    />
+                    <button 
+                        onClick={() => handleDownloadAttachment(event, AttachmentTypes.DEPARTMENT_HEAD_APPROVAL)} 
+                        className={`form--input--button ${form.departmentHeadAttachment ? "active" : ""}`} 
+                        name="departmentHeadAttachment">
+                            {form.departmentHeadAttachment}
+                    </button>
                 </div>
                 <div>
                     <label htmlFor="completionAttachment">Proof of Completion</label>

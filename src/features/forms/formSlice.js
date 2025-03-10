@@ -77,28 +77,6 @@ export const cancelForm = createAsyncThunk(
     }
 )
 
-// Update one of the attachment fields of an existing Form action:
-export const updateAttachment = createAsyncThunk(
-    'forms/updateAttachment',
-    async ({ id, attachmentType, key }, { rejectWithValue }) => {
-        try {
-            const response = await axios.put(`${API_URL}/forms/${id}/attachments/url`,
-                null, // nothing in request body
-                {
-                    params: {
-                        attachmentType,
-                        key
-                    }
-                }
-            );
-            return response.data;
-        } 
-        catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    }
-);
-
 // Submit Form to approval chain:
 // TODO: include requesting user's username in request header:
 export const submitForm = createAsyncThunk(
@@ -133,6 +111,42 @@ export const supervisorApproval = createAsyncThunk(
         }
     }
 );
+
+// Update one of the attachment fields of an existing Form action:
+export const updateAttachment = createAsyncThunk(
+    'forms/updateAttachment',
+    async ({ id, attachmentType, key }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${API_URL}/forms/${id}/attachments/url`,
+                null, // nothing in request body
+                {
+                    params: {
+                        attachmentType,
+                        key
+                    }
+                }
+            );
+            return response.data;
+        } 
+        catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Deny the reimbursement request:
+export const denyRequest = createAsyncThunk(
+    'forms/denyRequest',
+    async ({ id, approver, reason }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${API_URL}/forms/${id}/deny`, { approver, reason });
+            return response.data;
+        }
+        catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+)
 
 const formSlice = createSlice({
     name: 'forms',
@@ -235,21 +249,6 @@ const formSlice = createSlice({
                 state.error = action.payload;
             })
 
-            // Update attachment fields on existing Form:
-            .addCase(updateAttachment.pending, state => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(updateAttachment.fulfilled, (state, action) => {
-                state.loading = false;
-                const { attachmentName, key } = action.payload;
-                state.form = {...state.form, [attachmentName]: key};
-            })
-            .addCase(updateAttachment.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
             // Submit Form for approval:
             .addCase(submitForm.pending, state => {
                 state.loading = true;
@@ -274,6 +273,35 @@ const formSlice = createSlice({
                 state.form = action.payload;
             })
             .addCase(supervisorApproval.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            // Update attachment fields on existing Form:
+            .addCase(updateAttachment.pending, state => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateAttachment.fulfilled, (state, action) => {
+                state.loading = false;
+                const { attachmentName, key } = action.payload;
+                state.form = {...state.form, [attachmentName]: key};
+            })
+            .addCase(updateAttachment.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            // Deny request and add reason to form:
+            .addCase(denyRequest.pending, state => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(denyRequest.fulfilled, (state, action) => {
+                state.loading = false;
+                state.form = action.payload;
+            })
+            .addCase(denyRequest.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

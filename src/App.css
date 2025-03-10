@@ -173,7 +173,7 @@ fieldset {
   margin-bottom: 2rem;
 }
 
-.form--fields--container {
+.form--fields--container, .form--buttons--container {
   display: flex;
   gap: 2rem;
   justify-content: space-between;
@@ -191,7 +191,7 @@ label {
   margin-bottom: 0.3125rem;
 }
 
-input, textarea, select {
+input, textarea, select, .form--input--button {
   width: 100%;
   padding: 0.625rem;
   background-color: #782F40;
@@ -199,6 +199,20 @@ input, textarea, select {
   border: 2px solid #000000;
   border-radius: 5px;
   font-size: 1rem;
+}
+
+.form--input--button {
+  text-align: left;
+}
+
+.active {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.active:hover {
+  color: #CEB888;
+  transform: translateX(0.5rem);
 }
 
 .time--date--field {
@@ -209,6 +223,10 @@ input:focus, textarea:focus, select:focus {
   background-color: #CEB888;
   color: black;
   outline: none;
+}
+
+.form--buttons--container {
+  margin-top: 2rem;
 }
 
 .form--button {
@@ -357,8 +375,28 @@ td.reimbursement {
   font-size: 1rem;
 }
 
+.message--icon--wrapper {
+  display: inline-block;
+  position: relative;
+}
+
 .message--icon {
   width: 2rem;
+}
+
+.message--urgent--icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  text-align: center;
+  line-height: 1rem;
+  font-weight: bold;
+  font-family: 'Arial Rounded MT Bold', Helvetica, sans-serif;
 }
 
 /* Dashboard styling */
