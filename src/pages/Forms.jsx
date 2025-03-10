@@ -3,9 +3,10 @@ import { Outlet } from "react-router-dom";
 export default function Forms() {
 
     return(
-        <section>
+        <article>
             <h1>Forms Page</h1>
+            <hr />
             <Outlet />
-        </section>
+        </article>
     )
 }

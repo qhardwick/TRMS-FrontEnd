@@ -1,14 +1,18 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { submitForm, updateAttachment } from "../features/forms/formSlice";
+import { setLoading, submitForm, updateAttachment } from "../../features/forms/formSlice";
+import { API_URL } from "../../config/config";
+import { useNavigate } from "react-router-dom";
 
 
-export default function NewFormAttachments() {
+export default function AttachmentsForm() {
 
     // Define redux global state handlers:
-    const { loading, error, form } = useSelector(state => state.forms);
     const dispatch = useDispatch();
+    const { loading, error, form } = useSelector(state => state.forms);
+    const currentUser = useSelector(state => state.users.currentUser);
+    const navigate = useNavigate();
 
     // Define local state to handle the attachment files being uploaded:
     const [attachments, setAttachments] = useState({
@@ -35,10 +39,17 @@ export default function NewFormAttachments() {
         if(!attachments[attachmentType]) return;
         try {
             // Set loading to true to prevent multiple button presses and indicate to user that request is being worked on:
-            dispatch({ type: 'forms/setLoading', payload: true});
+            dispatch(setLoading(true));
 
             // Read MIME type of file (application/pdf, image/png, etc):
-            const contentType = attachments[attachmentType].type;
+            const file = attachments[attachmentType];
+            let contentType = file.type;
+
+            // The supervisorAttachment and departmentHeadAttachment are both expecting application/vnd.ms-outlook, which does not get
+            // get detected. As a workaround, if no MIME type is detected we'll check to see if the file ends with a .msg extension:
+            if(!contentType && file.name.toLowerCase().endsWith(".msg")) {
+                contentType = "application/vnd.ms-outlook";
+            }
 
             // Map from Form field keys to request enums:
             const attachmentTypeEnum = attachmentTypeMapping[attachmentType];
@@ -46,7 +57,7 @@ export default function NewFormAttachments() {
             // Request pre-signed url from api. Pass along the attachmentType (event attachment, supervisor pre-approval, etc)
             // and the contentType (MIME type) to verify that file is in an acceptable format for the type of attachment:
             const response = await axios.post(
-                `http://localhost:8125/forms/${form.id}/attachments/url`,
+                `${API_URL}/forms/${form.id}/attachments/url`,
                 null,
                 { params: { "attachmentType": attachmentTypeEnum, contentType } }
             );
@@ -57,7 +68,7 @@ export default function NewFormAttachments() {
 
             // Upload file to S3 using pre-signed url. Note that the key is embedden in the url, but we still want it so that we can
             // store it in our database object to reference the attachment when we retrieve it from S3:
-            await axios.put(url, attachments[attachmentType], {
+            await axios.put(url, file, {
                 headers: {
                     "Content-Type": contentType
                 }
@@ -65,7 +76,7 @@ export default function NewFormAttachments() {
 
             // After successful upload, send the key back to the api so that we can update the database Form object with a reference
             // to our attachment:
-            await dispatch(updateAttachment({
+            dispatch(updateAttachment({
                 id: form.id,
                 "attachmentType": attachmentTypeEnum,
                 key
@@ -76,14 +87,25 @@ export default function NewFormAttachments() {
 
         } catch (error) {
             console.error("Error uploading attachment:", error)
+        } finally {
+            // dispatching updateAttachment will correctly update loading regardless of the result, but if we encounter an error that triggers
+            // the catch block before the function has been called we would be stuck "loading" forever:
+            dispatch(setLoading(false));
         }
     };
 
     // Submit the completed form to begin the approval chain process:
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(submitForm({id: form.id}));
+        dispatch(submitForm({id: form.id, "username": currentUser}));
     };
+
+    // Once the form has been submitted, navigate away from the attachments page and view the completed form:
+    useEffect(() => {
+        if(form.status != "CREATED") {
+            navigate("/forms/form");
+        }
+    }, [form])
 
     return(
         <form onSubmit={handleSubmit}>
@@ -119,7 +141,7 @@ export default function NewFormAttachments() {
                     </div>
                 </fieldset>
                 {error && <p className="error">{ error }</p>}
-                <button type="submit" disabled={loading}>{loading ? "Loading..." : "Submit"}</button>
+                <button className="form--button" type="submit" disabled={loading}>{loading ? "Loading..." : "Submit"}</button>
         </form>
     )
 }

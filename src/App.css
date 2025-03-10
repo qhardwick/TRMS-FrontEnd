@@ -1,31 +1,442 @@
-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 11px;
-  height: 65px;
-  background-color: #782F40;
-  color: #CEB888;
-  padding: 20px;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+/* Apply border-box to all elements and pseudo-elements */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.header--link {
-  text-decoration: none;
-  color: #CEB888;
-} 
-
-body {
+/* Ensure we're always covering the full height of the window. Establish base font size (1rem = 16px)  */
+html, body {
+  height: 100%;
+  padding: 0;
   margin: 0;
-  font-family: Inter, sans-serif;
+  font-size: 16px;
+}
+
+/* Prevent horizontal scrolling. Set font as well as bottom layer background color */
+/* Prev: #FFFDD0 */
+body {
+  font-family: 'Lato', sans-serif;
   background-color: #FFFDD0;
+  overflow-x: hidden;
+}
+
+/* Makes the <main> container defined in App.jsx housing all of our components take up full height of window */
+main {
+  display: flex;
+  flex-direction: column; /* stacks components vertically rather than horizontally, so header -> body -> footer */
+  min-height: 100%;
+}
+
+/* Make all link text match the text of the rest of its container. No turning blue or underlines, etc */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+}
+
+h3 {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #CEB888;
+  margin-top: 1.5rem;
+}
+
+p {
+  font-size: 1.1rem;
+  text-align: justify;
+  margin-top: 1.5rem;
+}
+
+hr {
+  border: 1px solid black;
+}
+
+/* Fill unused space in parent (main) flexbox, scroll vertically if needed, extra margin on top to push content down
+  below pinned header element that would otherwise cover it up */ 
+article {
+  background-color: #D8C7A1;
+  max-width: 90%;
+  margin: 2rem auto;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 6rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin-bottom: 5.5rem;
 }
 
 section {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
+
+/* Header styles. Will be moved to separate CSS file */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* pins header to top. will not scroll out of view */
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  height: 5rem; /* (5rem * 16px/rem) = 80px */
+  background-color: #782F40;
+  color: #CEB888;
+  padding: 1.25rem;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+}
+
+/* Spread horizontally, gap between items, remove bullets, pin to the right in header but 6em away from edge  */
+header > ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  position: absolute;
+  right: 6rem;
+}
+
+/***** This only exists to switch between test users until we implement real auth. Will delete.  ******/
+header > ol {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  position: absolute;
+  left: 6rem;
+}
+
+/* Align text within center of container, allow container to fill all unused space within parent (header) flexbox */
+.header--title {
+  text-align: center;
+  text-decoration: none;
+  color: #CEB888;
+  flex-grow: 1;
+  margin: 0;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 300;
+}
+
+/* Don't underline or change color of link text */
+.header--link {
+  text-decoration: none;
+  color: #CEB888;
+  font-size: 1rem;
+}
+
+.header--link:hover {
+  color: #D6A831;
+}
+
+.header--button {
+  background: none;
+  border: none;
+}
+
+.header--button:hover {
+  cursor: pointer;
+}
+
+/* General Form styling */
+form {
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 50rem;
+  margin: 2.5rem auto;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+fieldset {
+  margin-bottom: 3rem;
+}
+
+.form--section--containers {
+  margin-bottom: 2rem;
+}
+
+.form--fields--container, .form--buttons--container {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.form--field {
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+label {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 0.3125rem;
+}
+
+input, textarea, select, .form--input--button {
+  width: 100%;
+  padding: 0.625rem;
+  background-color: #782F40;
+  color: #D6A831;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form--input--button {
+  text-align: left;
+}
+
+.active {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.active:hover {
+  color: #CEB888;
+  transform: translateX(0.5rem);
+}
+
+.time--date--field {
+  width: 13rem;
+}
+
+input:focus, textarea:focus, select:focus {
+  background-color: #CEB888;
+  color: black;
+  outline: none;
+}
+
+.form--buttons--container {
+  margin-top: 2rem;
+}
+
+.form--button {
+  background-color: #CEB888;
+  color: #782F40;
+  width: 100%;
+  padding: 1.67rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-content: center;
+}
+
+.form--button:hover {
+  background-color: #D6A831;
+}
+
+.form--link {
+  text-align: center;
+}
+
+/* Spin animation to play while loading */
+@keyframes spinning {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading--icon {
+  height: 3rem;
+  animation: spinning 1s ease-in-out infinite;
+}
+
+/* Used in View Form document */
+.form--value {
+  background-color: #f0f0f0;
+  padding: 0.625rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #333;
+}
+
+/* Text decoration for error messages */
 .error {
   color: red;
 }
+
+/* Footer styles. Will likely get moved to separate file */
+footer {
+  background-color: #782F40;
+  height: 4.5rem;
+  color: #CEB888;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 0.625rem 0;
+  text-align: center;
+  z-index: 10;
+}
+
+.forms--links--container {
+  width: 33%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.forms--links--container a {
+  text-decoration: none;
+}
+
+.forms--links--container th, 
+.forms--links--container td {
+  text-align: center;
+}
+
+/***** Table Styles *****/
+table {
+  table-layout: fixed;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin-top: 2.5rem;
+  background-color: #FFF;
+  overflow: auto;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: center;
+}
+
+th {
+  background-color: #782F40;
+  color: #CEB888;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+td {
+  border-bottom: 1px solid #DDD;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+tr:nth-child(even) {
+  background-color: #F9F9F9;
+}
+
+tr:hover {
+  background-color: #E0E0E0;
+}
+
+td:hover {
+  background-color: #F1F1F1;
+}
+
+td.urgent {
+  font-weight: bold;
+  color: #E94B3C;
+}
+
+td.cost, td.reimbursement {
+  text-align: right;
+  font-weight: 500;
+}
+
+th.reimbursement {
+  padding-right: 0;
+}
+
+td.reimbursement {
+  padding-right: 4rem;
+}
+
+.message--table--button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+}
+
+.message--icon--wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.message--icon {
+  width: 2rem;
+}
+
+.message--urgent--icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  text-align: center;
+  line-height: 1rem;
+  font-weight: bold;
+  font-family: 'Arial Rounded MT Bold', Helvetica, sans-serif;
+}
+
+/* Dashboard styling */
+.dashboard--button {
+  background-color: #CEB888;
+  color: #782F40;
+  width: 100%;
+  padding: 1.67rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-content: center;
+  animation: fadeIn 1s ease-out;
+}
+
+.dashboard--button:hover {
+  background-color: #D6A831;
+}
+
+/* For small screen devices */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  th, td {
+    padding: 0.75rem;
+  }
+
+  td {
+    word-wrap: break-word;
+  }
+
+  td.urgent, td.cost, td.reimbursement {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
